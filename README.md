@@ -1,6 +1,6 @@
 clone deepsort from your fix
 
-dataset: https://drive.google.com/file/d/1lushuv4QMTmfFwURU1Ug6mezkzQAMi0S/view
+dataset: https://drive.google.com/file/d/1lushuv4QMTmfFwURU1Ug6mezkzQAMi0S/view @John1liu
 
  ### TODO
 
