@@ -7,6 +7,6 @@ dataset: https://drive.google.com/file/d/1lushuv4QMTmfFwURU1Ug6mezkzQAMi0S/view 
  * train siamese network for vehicles
  * integrate poetry
  * add more detector option
- * cli support
+ * add argument parser
  * add onnx and TVM support
  * format code

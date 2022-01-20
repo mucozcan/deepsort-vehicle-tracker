@@ -2,25 +2,13 @@ import torch
 import torchvision
 import numpy as np
 import cv2
-import sys
 from imutils.video import VideoStream
 import time
 
+from siamese_network.models import SiameseNetwork
 from deepsort import DeepSORT
 import detect_utils
-
-def get_gt(dets):
-
-    detections = []
-    out_scores = []
-    for det in dets:
-
-        coords = det['coords']
-
-        detections.append(coords)
-        out_scores.append(det['conf'])
-
-    return detections,out_scores
+import config as cfg
 
 if __name__ == '__main__':
     
@@ -30,22 +18,26 @@ if __name__ == '__main__':
 
     model.eval().to(device)
 
+    feature_extactor = SiameseNetwork()
+    feature_extactor.load_state_dict(torch.load(cfg.feature_extractor_path))
+    feature_extactor.to(device)
     frame_id = 0
 
     # cap = VideoStream("rtsp:192.168.1.11:8554/test").start()
-    cap = VideoStream(0).start()
+    cap = cv2.VideoCapture("test.mp4")
 
-    sys.path.append("./siamese_network/")
-    deepsort = DeepSORT("./siamese_network/ckpts/model640.pt")
+    deepsort = DeepSORT(feature_extactor, device)
 
     while True:
         start_time = time.time()
-        frame = cap.read()
+        ret, frame = cap.read()
+
+        print(type(frame))
 
         dets = detect_utils.predict(frame, model, device, 0.6)
 
         if len(dets) != 0:
-            detections,out_scores = get_gt(dets)
+            detections,out_scores = detect_utils.get_gt(dets)
 
             detections = np.array(detections)
             out_scores = np.array(out_scores) 

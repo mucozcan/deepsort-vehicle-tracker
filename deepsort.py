@@ -3,28 +3,30 @@ import torchvision
 import numpy as np
 
 from deep_sort.deep_sort import nn_matching
-from deep_sort.deep_sort.tracker import Tracker 
+from deep_sort.deep_sort.tracker import Tracker
 from deep_sort.application_util import preprocessing as prep
 from deep_sort.deep_sort.detection import Detection
 from siamese_network.utils import get_gaussian_mask
 
-class DeepSORT():
-    def __init__(self, feature_ext_path):
-        
-        self.feature_extractor = torch.load(feature_ext_path)
-        self.feature_extractor = self.feature_extractor.cuda().eval()
 
-        self.metric = nn_matching.NearestNeighborDistanceMetric("cosine", 0.5, 100)
+class DeepSORT():
+    def __init__(self, feature_extractor, device):
+
+        self.device = device
+        self.feature_extractor = feature_extractor
+
+        self.metric = nn_matching.NearestNeighborDistanceMetric(
+            "cosine", 0.5, 100)
 
         self.tracker = Tracker(self.metric)
-        self.gaussian_mask = get_gaussian_mask(image_size=128, aspect_ratio=1).cuda()
+        self.gaussian_mask = get_gaussian_mask(
+            height=256, width=128).to(self.device)
 
         self.transforms = torchvision.transforms.Compose([
             torchvision.transforms.ToPILImage(),
-            torchvision.transforms.Resize((128, 128)),
+            torchvision.transforms.Resize((256, 128)),
             torchvision.transforms.ToTensor()
-            ])
-
+        ])
 
     def preproc(self, frame, detections):
 
@@ -53,9 +55,8 @@ class DeepSORT():
             y_min = int(y_min)
 
             x_max = int(x_max)
-            y_max  = int(y_max)
+            y_max = int(y_max)
 
-           
             try:
                 obj = frame[y_min:y_max, x_min:x_max, :]
                 obj = self.transforms(obj)
@@ -69,8 +70,7 @@ class DeepSORT():
 
     def run(self, frame, out_scores, out_boxes):
 
-
-        if out_boxes==[]:
+        if out_boxes == []:
             self.tracker.predict()
             print("No detections.")
 
@@ -80,20 +80,23 @@ class DeepSORT():
 
         detections = np.array(out_boxes)
 
-        processed_objs = self.preproc(frame, detections).cuda()
+        processed_objs = self.preproc(frame, detections).to(self.device)
         processed_objs = processed_objs * self.gaussian_mask
 
         features = self.feature_extractor.forward_once(processed_objs)
         features = features.detach().cpu().numpy()
 
+        # DEBUG
+        # print(f"Feature shape: {features.shape}")
+
         if len(features.shape) == 1:
             features = np.expand_dims(features, 0)
 
-
-        dets = [Detection(bbox, score, feature) for bbox, score, feature in zip(detections, out_scores, features)]
+        dets = [Detection(bbox, score, feature) for bbox, score,
+                feature in zip(detections, out_scores, features)]
 
         out_boxes = np.array([d.tlwh for d in dets])
-    
+
         out_scores = np.array([d.confidence for d in dets])
         indices = prep.non_max_suppression(out_boxes, 0.8, out_scores)
 
@@ -102,7 +105,3 @@ class DeepSORT():
         self.tracker.update(dets)
 
         return self.tracker, dets
-
-
-
-
