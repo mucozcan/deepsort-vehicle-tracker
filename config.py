@@ -16,4 +16,6 @@ coco_names = [
 
 classes_to_track = ["car", "truck", "bus"]
 
-feature_extractor_path = "./siamese_network/ckpts/model.pth"
+feature_extractor_path = "./siamese_network/ckpts/model_128x128.pth"
+
+detector_input_size = (360, 640)

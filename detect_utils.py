@@ -8,20 +8,24 @@ import config as cfg
 # this will help us create a different color for each class
 COLORS = np.random.uniform(0, 255, size=(len(cfg.coco_names), 3))
 
-# define the torchvision image transforms
-transform = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize((256, 128)),
-    transforms.ToTensor(),
-])
 
-
-def predict(image, model, device, detection_threshold):
+def predict(image, model, device, detection_threshold, input_size):
     """
     Predict the output of an image after forward pass through
     the model and return the bounding boxes, class names, and 
     class labels. 
     """
+
+    transform = transforms.Compose([
+        transforms.ToPILImage(),
+        transforms.Resize(input_size),
+        transforms.ToTensor(), ])
+
+    img_h, img_w, _ = image.shape
+
+    x_scale = img_w / input_size[1]
+    y_scale = img_h / input_size[0]
+
     dets = []
     image = transform(image).to(device)
     image = image.unsqueeze(0)
@@ -36,8 +40,9 @@ def predict(image, model, device, detection_threshold):
 
     for idx, box in enumerate(boxes):
         xmin, ymin, xmax, ymax = box.squeeze().tolist()
-        box = [xmin, ymin, xmax, ymax]
-        print(pred_classes[idx])
+        xmin, ymin, xmax, ymax = xmin * x_scale, ymin * \
+            y_scale, xmax * x_scale, ymax * y_scale
+        box = [xmin, ymin, xmax-xmin, ymax-ymin]
         if pred_classes[idx] in cfg.classes_to_track:
             dets.append(
                 {'coords': box, 'conf': pred_scores[idx], 'label': pred_classes[idx]})

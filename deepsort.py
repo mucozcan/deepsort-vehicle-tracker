@@ -20,11 +20,11 @@ class DeepSORT():
 
         self.tracker = Tracker(self.metric)
         self.gaussian_mask = get_gaussian_mask(
-            height=256, width=128).to(self.device)
+            height=128, width=128).to(self.device)
 
         self.transforms = torchvision.transforms.Compose([
             torchvision.transforms.ToPILImage(),
-            torchvision.transforms.Resize((256, 128)),
+            torchvision.transforms.Resize((128, 128)),
             torchvision.transforms.ToTensor()
         ])
 
@@ -86,8 +86,6 @@ class DeepSORT():
         features = self.feature_extractor.forward_once(processed_objs)
         features = features.detach().cpu().numpy()
 
-        # DEBUG
-        # print(f"Feature shape: {features.shape}")
 
         if len(features.shape) == 1:
             features = np.expand_dims(features, 0)
@@ -103,5 +101,4 @@ class DeepSORT():
         dets = [dets[i] for i in indices]
         self.tracker.predict()
         self.tracker.update(dets)
-
         return self.tracker, dets

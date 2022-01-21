@@ -107,6 +107,6 @@ if __name__ == "__main__":
     from torchsummaryX import summary
     model = SiameseNetwork()
     model.cuda()
-    input1 = torch.zeros((1, 3, 128, 128)).cuda()
-    input2 = torch.zeros((1, 3, 128, 128)).cuda()
+    input1 = torch.zeros((2, 3, 256, 128)).cuda()
+    input2 = torch.zeros((2, 3, 256, 128)).cuda()
     summary(model,  input1, input2)
