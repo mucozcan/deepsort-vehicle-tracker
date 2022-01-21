@@ -9,11 +9,6 @@ if __name__ == '__main__':
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-    # model = torchvision.models.detection.ssdlite320_mobilenet_v3_large(
-    #     pretrained=True)
-
-    # model = torchvision.models.detection.ssd300_vgg16(pretrained=True)
-    # model = torchvision.models.detection.retinanet_resnet50_fpn(pretrained=True)
     model = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(
         pretrained=True)
     model.eval().to(device)
