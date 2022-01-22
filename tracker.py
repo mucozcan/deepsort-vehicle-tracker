@@ -3,6 +3,7 @@ import torchvision
 import numpy as np
 import cv2
 import time
+import argparse
 
 from siamese_network.models import SiameseNetwork
 from vehicle_tracker.deepsort import DeepSORT
@@ -10,6 +11,10 @@ import vehicle_tracker.detect_utils as detect_utils
 import config as cfg
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description="2D Vehicle Tracker")
+    parser.add_argument('--source', type=str, required=True, help="Source of stream. Can be a file or RTSP stream link")
+    args = parser.parse_args()
 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -24,7 +29,7 @@ if __name__ == '__main__':
 
     frame_id = 0
 
-    cap = cv2.VideoCapture("vehicle_tracker/test.mp4")
+    cap = cv2.VideoCapture(args.source)
 
     deepsort = DeepSORT(feature_extactor, device)
 
