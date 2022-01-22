@@ -5,8 +5,8 @@ import cv2
 import time
 
 from siamese_network.models import SiameseNetwork
-from deepsort import DeepSORT
-import detect_utils
+from vehicle_tracker.deepsort import DeepSORT
+import vehicle_tracker.detect_utils as detect_utils
 import config as cfg
 
 if __name__ == '__main__':
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     frame_id = 0
 
-    cap = cv2.VideoCapture("test.mp4")
+    cap = cv2.VideoCapture("vehicle_tracker/test.mp4")
 
     deepsort = DeepSORT(feature_extactor, device)
 

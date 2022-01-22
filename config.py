@@ -1,4 +1,6 @@
+import os
 
+ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 coco_names = [
     '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
@@ -16,6 +18,6 @@ coco_names = [
 
 classes_to_track = ["car", "truck", "bus"]
 
-feature_extractor_path = "./siamese_network/ckpts/model_128x128.pth"
+feature_extractor_path = os.path.join(ROOT_DIR,"siamese_network/ckpts/model_128x128.pth") 
 
 detector_input_size = (360, 640)
