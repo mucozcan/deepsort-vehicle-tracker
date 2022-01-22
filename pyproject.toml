@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "vehicle-tracker"
+name = "deepsort-vehicle-tracker"
 version = "0.1.0"
 description = "Vehicle tracking using DeepSORT + PyTorch"
 authors = ["Mücteba Özcan <mmozcan4@gmail.com>"]
