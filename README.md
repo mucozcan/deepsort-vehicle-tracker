@@ -14,8 +14,8 @@ For Faster-RCNN, I used the official torch implementation with a backbone [Mobil
 ### Installation
 Clone the vehicle-tracker repo:
 ``` 
-git clone https://github.com/mucozcan/vehicle-tracker.git
-cd vehicle-tracker/
+git clone https://github.com/mucozcan/deepsort-vehicle-tracker.git
+cd deepsort-vehicle-tracker/
 ```
 Clone the official DeepSORT implementation with the dependency fix made by me:
 ```
