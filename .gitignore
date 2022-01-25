@@ -1,4 +1,5 @@
 __pycache__/
 siamese_network/data/
+detector/data/
 test.mp4
 deep_sort

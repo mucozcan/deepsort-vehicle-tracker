@@ -6,7 +6,7 @@ import config as cfg
 
 
 # this will help us create a different color for each class
-COLORS = np.random.uniform(0, 255, size=(len(cfg.coco_names), 3))
+COLORS = np.random.uniform(0, 255, size=(len(cfg.class_dict), 3))
 
 
 def predict(image, model, device, detection_threshold, input_size):
@@ -31,8 +31,7 @@ def predict(image, model, device, detection_threshold, input_size):
     image = image.unsqueeze(0)
     outputs = model(image)
 
-    pred_classes = [cfg.coco_names[i]
-                    for i in outputs[0]['labels'].cpu().numpy()]
+    pred_classes = cfg.class_dict
     pred_scores = outputs[0]['scores'].detach().cpu().numpy()
     pred_bboxes = outputs[0]['boxes'].detach().cpu().numpy()
     # get boxes above the threshold score
